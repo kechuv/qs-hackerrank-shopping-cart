@@ -1,7 +1,16 @@
 <template>
   <div class="layout-row">
-    <ProductList class="flex-70" :products="products" />
-    <Cart class="flex-30" :cart="cart" />
+    <ProductList
+      class="flex-70"
+      :products="products"
+      @add="addToCart"
+      @remove="removeFromCart"
+    />
+    <Cart
+      class="flex-30"
+      :cart="cart"
+      @discount="setDiscount"
+    />
   </div>
 </template>
 
@@ -22,6 +31,17 @@ export default {
         selectedCoupon: 0
       },
       products: []
+    }
+  },
+  watch: {
+    'cart.items': {
+      handler() {
+        this.calcTotal();
+      },
+      deep: true
+    },
+    'cart.selectedCoupon'() {
+      this.calcTotal();
     }
   },
   created() {
@@ -49,6 +69,22 @@ export default {
       const cartIndex = this.cart.items.findIndex(c => c.id === product.id);
       this.cart.items.splice(cartIndex, 1);
     },
+    setDiscount(discount) {
+      this.cart.selectedCoupon = discount;
+    },
+    calcSubTotal() {
+      this.cart.subTotal = this.cart.items.reduce((acc, item) => {
+        return acc + (item.price * item.quantity)
+      }, 0)
+    },
+    calcDiscount() {
+      this.cart.discount = this.cart.subTotal * (this.cart.selectedCoupon / 100);
+    },
+    calcTotal() {
+      this.calcSubTotal();
+      this.calcDiscount();
+      this.cart.totalPrice = this.cart.subTotal - this.cart.discount;
+    }
   }
 }
 export const PRODUCTS = [

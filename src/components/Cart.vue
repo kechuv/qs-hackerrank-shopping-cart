@@ -24,8 +24,12 @@
 
       <div class="layout-row justify-content-between align-items-center px-8 mx-12">
         <h5>Select Coupon</h5>
-        <select data-testid="cart-coupon"
-                class="coupon-select">
+        <select
+          v-model="coupon"
+          data-testid="cart-coupon"
+          class="coupon-select"
+          @change="$emit('discount', coupon)"
+        >
           <option :value="0">None</option>
           <option :value="10">OFF10</option>
           <option :value="20">OFF20</option>
@@ -62,8 +66,8 @@ export default {
       coupon : 0
     }
   },
+  emits: ['discount'],
   methods : {
-
   }
 }
 </script>

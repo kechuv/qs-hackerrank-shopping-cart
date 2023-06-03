@@ -11,11 +11,21 @@
           <p class="ma-0 mt-8 text-center">${{ product.price }}</p>
         </div>
         <div class="card-actions justify-content-center pa-4">
-          <button class="x-small outlined" data-testid="btn-item-add">
+          <button
+            v-if="product.cartQuantity < 1"
+            class="x-small outlined"
+            data-testid="btn-item-add"
+            @click="$emit('add', product)"
+          >
             Add To Cart
           </button>
 
-          <button class="x-small danger" data-testid="btn-item-remove">
+          <button
+            v-if="product.cartQuantity > 0"
+            class="x-small danger"
+            data-testid="btn-item-remove"
+            @click="$emit('remove', product)"
+          >
             Remove
           </button>
         </div>
@@ -31,6 +41,7 @@ export default {
   props: {
     products: Array
   },
+  emits: ['add', 'remove'],
   methods : {
 
   }
